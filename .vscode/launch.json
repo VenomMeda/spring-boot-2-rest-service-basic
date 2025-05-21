@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-SpringBoot2RestServiceApplication<spring-boot-2-rest-service-basic>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.in28minutes.springboot.rest.example.SpringBoot2RestServiceApplication",
+            "projectName": "spring-boot-2-rest-service-basic",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
