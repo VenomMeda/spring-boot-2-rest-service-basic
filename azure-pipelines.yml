@@ -1,0 +1,60 @@
+trigger:
+  - main  # or "master" if you're using master branch
+
+variables:
+  imageName: 'springboot-app'
+  acrName: 'springbootacr2025'         # Your ACR name
+  resourceGroup: 'rg-springboot'       # Your existing resource group
+  containerName: 'springboot-aci'
+  dnsLabel: 'springboot-aci-demo2025'  # Must be globally unique
+  - group: acr-secrets                  # Link your variable group
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+  - stage: BuildAndPush
+    jobs:
+      - job: Build
+        steps:
+          - task: Maven@3
+            inputs:
+              mavenPomFile: 'pom.xml'
+              goals: 'package'
+              publishJUnitResults: true
+
+          - task: Docker@2
+            inputs:
+              containerRegistry: 'azure-service-conn-spring'
+              repository: '$(acrName).azurecr.io/$(imageName)'
+              command: 'buildAndPush'
+              Dockerfile: '**/Dockerfile'
+              tags: |
+                latest
+
+  - stage: DeployToACI
+    dependsOn: BuildAndPush
+    jobs:
+      - job: Deploy
+        steps:
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: 'azure-service-conn-spring'
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                az container delete --name $(containerName) --resource-group $(resourceGroup) --yes || true
+                az container create \
+                  --resource-group $(resourceGroup) \
+                  --name $(containerName) \
+                  --image $(acrName).azurecr.io/$(imageName):latest \
+                  --cpu 1 \
+                  --memory 1 \
+                  --registry-login-server $(acrName).azurecr.io \
+                  --registry-username $(ACR_USERNAME) \
+                  --registry-password $(ACR_PASSWORD) \
+                  --dns-name-label $(dnsLabel) \
+                  --ports 8080
+            env:
+              ACR_USERNAME: $(acrUsername)
+              ACR_PASSWORD: $(acrPassword)
