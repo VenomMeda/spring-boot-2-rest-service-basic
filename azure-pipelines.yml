@@ -2,12 +2,18 @@ trigger:
   - main  # or "master" if you're using master branch
 
 variables:
-  imageName: 'springboot-app'
-  acrName: 'springbootacr2025'         # Your ACR name
-  resourceGroup: 'rg-springboot'       # Your existing resource group
-  containerName: 'springboot-aci'
-  dnsLabel: 'springboot-aci-demo2025'  # Must be globally unique
-  - group: acr-secrets                  # Link your variable group
+  - group: acr-secrets
+  - name: imageName
+    value: 'springboot-app'
+  - name: acrName
+    value: 'springbootacr2025'
+  - name: resourceGroup
+    value: 'rg-springboot'
+  - name: containerName
+    value: 'springboot-aci'
+  - name: dnsLabel
+    value: 'springboot-aci-demo2025'
+
 
 pool:
   vmImage: 'ubuntu-latest'
