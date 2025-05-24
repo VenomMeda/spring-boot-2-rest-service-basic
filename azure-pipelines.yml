@@ -1,5 +1,5 @@
 trigger:
-  - main  # or "master" if you're using master branch
+  - main
 
 variables:
   - group: acr-secrets
@@ -13,7 +13,6 @@ variables:
     value: 'springboot-aci'
   - name: dnsLabel
     value: 'springboot-aci-demo2025'
-
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -29,14 +28,15 @@ stages:
               goals: 'package'
               publishJUnitResults: true
 
-          - task: Docker@2
+          - task: AzureCLI@2
             inputs:
-              containerRegistry: 'azure-service-conn-spring'
-              repository: '$(acrName).azurecr.io/$(imageName)'
-              command: 'buildAndPush'
-              Dockerfile: '**/Dockerfile'
-              tags: |
-                latest
+              azureSubscription: 'azure-service-conn-spring'
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                az acr login --name $(acrName)
+                docker build -t $(acrName).azurecr.io/$(imageName):latest .
+                docker push $(acrName).azurecr.io/$(imageName):latest
 
   - stage: DeployToACI
     dependsOn: BuildAndPush
