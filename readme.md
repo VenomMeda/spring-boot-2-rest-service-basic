@@ -1,16 +1,10 @@
 # Spring Boot 2 REST Student Service Example
 
-This project is a simple Spring Boot REST API for managing students, demonstrating CRUD operations using Spring Data JPA and an H2 in-memory database.
+This project is a simple Spring Boot REST API for managing students, demonstrating CRUD operations using Spring Data JPA and an H2 in-memory database. It is integrated with Azure DevOps and Azure Container Instances (ACI) for CI/CD pipeline deployment.
 
-## Features
+---
 
-- List all students
-- Get a student by ID
-- Create a new student
-- Update an existing student
-- Delete a student
-
-## Technologies Used
+## 🛠️ Technologies Used
 
 - Java 17
 - Spring Boot 2.x
@@ -18,37 +12,46 @@ This project is a simple Spring Boot REST API for managing students, demonstrati
 - H2 Database (in-memory)
 - Maven
 - Docker
+- Azure Container Registry (ACR)
+- Azure Container Instances (ACI)
+- Azure DevOps Pipelines (CI/CD)
 
-## Getting Started
+---
 
 ### Prerequisites
 
 - Java 17+
 - Maven 3.6+
-- Docker (optional, for containerization)
+- Docker (for local use)
+- Azure Account
+- Azure DevOps Account
 
-### Build and Run Locally
+---
+
+## Build and Run Locally
 
 1. **Clone the repository:**
 
-   ```sh
+   ```bash
    git clone <your-repo-url>
    cd spring-boot-2-rest-service-basic
    ```
 2. **Build the project:**
 
-   ```sh
+   ```bash
    mvn clean package
    ```
 3. **Run the application:**
 
-   ```sh
+   ```bash
    mvn spring-boot:run
    ```
 
-   The app will start on [http://localhost:8080](http://localhost:8080).
+   App runs at: [http://localhost:8080](http://localhost:8080)
 
-### API Endpoints
+---
+
+## API Endpoints
 
 | Method | Endpoint           | Description          |
 | ------ | ------------------ | -------------------- |
@@ -58,27 +61,51 @@ This project is a simple Spring Boot REST API for managing students, demonstrati
 | PUT    | `/students/{id}` | Update a student     |
 | DELETE | `/students/{id}` | Delete a student     |
 
-### Sample Data
-
 Sample students are loaded at startup from `src/main/resources/data.sql`.
 
-### Docker
+---
+
+## Docker Support
 
 1. **Build the Docker image:**
 
-   ```sh
+   ```bash
    docker build -t spring-boot-rest-example .
    ```
 2. **Run the container:**
 
-   ```sh
+   ```bash
    docker run -p 8080:8080 spring-boot-rest-example
    ```
 
-## License
+---
 
-This project is for educational purposes.
+## ☁️ Azure DevOps CI/CD Pipeline
+
+### What’s Been Completed:
+
+- ✅ Dockerized the Spring Boot application
+- ✅ Created Azure Resource Group: `rg-springboot`
+- ✅ Created Azure Container Registry: `springbootacr2025`
+- ✅ Built and pushed Docker image to ACR
+- ✅ Created Service Principal and DevOps Service Connection: `azure-service-conn-spring`
+- ✅ Wrote `azure-pipelines.yml` with:
+  - Maven JAR build
+  - Docker image build & push to ACR
+  - Deployment to Azure Container Instances (ACI)
 
 ---
 
-**Author:** Param
+### Why the Deployment Is Incomplete
+
+Azure DevOps requires permission to use Microsoft-hosted agents for running pipelines. As this DevOps organization is newly created, **Microsoft has not yet granted free parallel job capacity**.
+
+I have submitted a formal request using [this official form](https://aka.ms/azpipelines-parallelism-request) and is currently pending approval.
+
+Once granted, the full CI/CD process will execute successfully and deploy the app to ACI.
+
+---
+
+---
+
+**Author:** Param Yadav
